@@ -1,8 +1,18 @@
 import React, { Component } from 'react';
 import './add-project-form.css';
 import fire from '../../fire';
+// import firebase from 'firebase';
+import FileUploader from 'react-firebase-file-uploader';
 
 class AddProjectForm extends Component {
+  state = {
+    username: '',
+    projectImage: '',
+    isUploading: false,
+    progress: 0,
+    projectImageURL: '',
+  };
+
   createProject(e) {
     e.preventDefault();
 
@@ -11,7 +21,7 @@ class AddProjectForm extends Component {
       url: this.url.value,
       technologies: this.technologies.value,
       date: this.date.value,
-      image: this.image.value,
+      image: this.state.projectImageURL,
     };
 
     this.props.addProject(project);
@@ -21,6 +31,31 @@ class AddProjectForm extends Component {
       .push(project);
     this.projectForm.reset();
   }
+
+  // Image Uploader
+  handleUploadStart = () => this.setState({ isUploading: true, progress: 0 });
+
+  handleProgress = progress => this.setState({ progress });
+
+  handleUploadError = error => {
+    this.setState({ isUploading: false });
+    console.error(error);
+  };
+
+  handleUploadSuccess = filename => {
+    this.setState({
+      projectImage: filename,
+      progress: 100,
+      isUploading: false,
+    });
+
+    fire
+      .storage()
+      .ref('images')
+      .child(filename)
+      .getDownloadURL()
+      .then(url => this.setState({ projectImageURL: url }));
+  };
 
   //TODO: addProject Form only shows up if I'm logged in
 
@@ -55,12 +90,14 @@ class AddProjectForm extends Component {
           placeholder="Project Date"
           ref={input => (this.date = input)}
         />
-        <input
-          type="file"
-          name="projectImage"
+        <FileUploader
           accept="image/*"
-          placeholder="Project Image"
-          ref={input => (this.image = input)}
+          name="projectImage"
+          storageRef={fire.storage().ref('images')}
+          onUploadStart={this.handleUploadStart}
+          onUploadError={this.handleUploadError}
+          onUploadSuccess={this.handleUploadSuccess}
+          onProgress={this.handleProgress}
         />
         <button type="submit"> + Add Project</button>
       </form>
