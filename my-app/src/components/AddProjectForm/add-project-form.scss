@@ -1,8 +1,49 @@
 @import 'styles/_variables.scss';
 
-.project-block {
-	width: 100%;
+.project-form {
+	width: 60vw;
+	padding: 2vw;
 	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-around;
 	color: $black;
-	background: red;
+	font-size: 1.75vw;
+
+	&__input {
+		flex: 0 1 80%;
+		padding: 1vw;
+		margin: 1vw;
+	}
+
+	%button {
+		flex: 0 1 80%;
+		margin: 1vw;
+		color: white;
+		padding: 10px;
+		border-radius: 4px; 
+		cursor: pointer;
+		transition: all .35s ease-in-out;
+	}
+
+	&__file-upload {
+		@extend %button;
+
+		background: $black;
+
+		&:hover {
+			background: red;
+		}
+	}
+
+	&__submit {
+		@extend %button;
+
+		background: $black;
+		border: 0;
+		font-size: inherit;
+
+		&:hover {
+			background: red;
+		}
+	}
 }
