@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import Header from './components/Header/Header';
 import Footer from './components/Footer/Footer';
-import AddProjectForm from './components/AddProjectForm/AddProjectForm';
-import Project from './components/Project/Project';
 import fire from './fire';
 import './style.css';
 
@@ -55,13 +53,7 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        <AddProjectForm addProject={this.addProject} />
-        <ul className="projects">
-          {//loop over the array and return the project
-          Object.keys(this.state.projects).map(key => (
-            <Project key={key} index={key} project={this.state.projects[key]} />
-          ))}
-        </ul>
+          {this.props.children}
         <Footer />
       </div>
     );
